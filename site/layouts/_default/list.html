@@ -1,16 +1,33 @@
 {{ define "main" }}
+<div class="home h-feed">
 
-{{ partial "jumbotron" (dict "imageUrl" "/img/blog-index.jpg" "title" "Latest stories") }}
+  <ul class="post-list">
+	{{ $paginator := .Paginate (where .Pages.ByDate.Reverse "Type" "post") (index .Site.Params "archive-paginate" | default 25) }}
+	{{ range $paginator.Pages  }}
+      <li class="h-entry">
+		{{ if .Title }}
+			<h1><a href="{{ .Permalink }}">{{ .Title }}</a></h1>
+		{{ end }}
 
-<div class="mw7 center">
-  <ul id="blog-list" class="flex-ns flex-wrap mhn1-ns pa3">
-      {{ range (.Paginator 4).Pages.ByPublishDate.Reverse }}
-          <li class="w-50-ns ph1-ns flex">
-            {{ .Render "li"}}
-          </li>
-      {{ end }}
+        <a href="{{ .Permalink }}" class="u-url"><span class="post-meta"><time class="dt-published" datetime="{{ .Date.Format "2006-01-02 15:04:05 -0700" }}">{{ .Date.Format "Jan 2, 2006" }}</time></span></a>
+
+        <div class="e-content">
+         	{{ .Content }}
+        </div>
+      </li>
+    {{ end }}
   </ul>
-  {{ partial "pagination" . }}
 </div>
-
-{{end}}
+<div class="post-nav">
+    {{ if $paginator.HasPrev }}
+    <span class="prev">
+        <a href="{{ $paginator.Prev.URL }}" title="Previous Page"><span class="arrow">← Newer Posts</span></a>
+    </span>
+    {{ end }}
+    {{ if $paginator.HasNext }}
+    <span class="next">
+        <a href="{{ $paginator.Next.URL }}"><span class="arrow">Older Posts →</span></a>
+    </span>
+    {{ end }}
+</div>
+{{ end }}

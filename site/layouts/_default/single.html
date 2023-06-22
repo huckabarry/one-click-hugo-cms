@@ -1,6 +1,13 @@
 {{ define "main" }}
+<div class="post">
 
-{{ partial "jumbotron" (dict "imageUrl" "/img/7.jpg" "title" "This is where the heading goes" "subtitle" "This is where the subtitle goes") }}
-{{ .Content }}
+  <header class="post-header">
+    <h2 class="post-title">{{ .Title }}</h2>
+  </header>
 
+  <article class="post-content">
+    {{ .Content }}
+  </article>
+
+</div>
 {{ end }}

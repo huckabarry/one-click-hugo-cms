@@ -1,15 +1,39 @@
 {{ define "main" }}
+<div class="post h-entry">
 
-  <div class="mw6 center ph3 pv4">
-    <h1 class="f2 lh-title b mb3">{{.Title}}</h1>
-    <div class="flex justify-between grey-3">
-      <p>{{ .Date.Format "Mon, Jan 2, 2006" }}</p>
-      <p>Read in {{ .ReadingTime }} minutes</p>
-    </div>
-    <div class="cms mw6">
-      <p>{{ .Description }}</p>
-      {{ if .Params.image }}<img src="{{ .Params.image }}" alt="{{ .Title }}" />{{ end }}
-      {{ .Content }}
-    </div>
-  </div>
+  <header class="post-header">
+    <a href="{{ .Permalink }}" class="post-date u-url"><time class="dt-published" datetime="{{ .Date.Format "2006-01-02 15:04:05 -0700" }}">{{ .Date.Format "Jan 2, 2006" }}</time> ∞</a>
+    {{ if .Title }}
+    <h2 class="p-name">{{ .Title }}</h2>
+    {{ end }}
+  </header>
+
+  <article class="post-content e-content {{ range .Params.categories }} {{ . }}{{ end }}">
+    {{ .Content }}
+  </article>
+
+  {{ if .Params.categories }}
+  <ul class="post-tags">
+    {{ range .Params.categories }} {{ $href := print (absURL "categories/") (urlize .) }}
+    <li><a href="{{ $href }}">#{{ . }}</a></li>
+    {{ end }}
+  </ul>
+  {{ end }}
+
+</div>
+{{ if or (templates.Exists "partials/reply-by-email.html") (templates.Exists "partials/conversation-link.html") }}
+<ul class="reply-buttons">
+{{ if templates.Exists "partials/reply-by-email.html" }}
+    <li>{{ partial "reply-by-email.html" . }}</li>
+{{ end }}
+{{ if templates.Exists "partials/conversation-link.html" }}
+  <li>{{ partial "conversation-link.html" . }}</li>
+{{ end }}
+{{ end }}
+</ul>
+
+{{ if .Site.Params.include_conversation }}
+<script type="text/javascript" src="https://micro.blog/conversation.js?url={{ .Permalink }}"></script>
+{{ end }}
+
 {{ end }}
